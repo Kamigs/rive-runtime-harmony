@@ -1,6 +1,6 @@
 # 仓库托管与同步
 
-两端仓库名均为 **rive-runtime-harmony**，ArkTS包名保持 **@ohos/rive**。本仓库使用独立`main`历史，不推送社区samples集合或原迁移仓库的其他分支。
+按用户要求，两端均为**公开源码仓库**，仓库名为 **rive-runtime-harmony**，ArkTS包名保持 **@ohos/rive**。本仓库使用独立`main`历史，不推送社区samples集合或原迁移仓库的其他分支。
 
 | 远端 | 仓库 |
 | --- | --- |
@@ -21,7 +21,7 @@ bash scripts/build.sh release
 bash scripts/build-example.sh
 ```
 
-私有仓库需要具备访问权限。也可从本地Gitea仓库页面复制克隆地址。详细环境要求和签名步骤见 [BUILD](BUILD.md)。源码中保存已导出的CLI素材，普通构建不需要Rive登录。
+公开仓库可匿名只读克隆；推送仍需要有写权限的账号。也可从本地Gitea仓库页面复制克隆地址。详细环境要求和签名步骤见 [BUILD](BUILD.md)。源码中保存已导出的CLI素材，普通构建不需要Rive登录。
 
 ## 双端同步
 
