@@ -1,0 +1,12 @@
+{
+  "Inter-Regular.ttf": {
+    "0": "Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)",
+    "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL",
+    "14": "http://scripts.sil.org/OFL"
+  },
+  "JetBrainsMono.ttf": {
+    "0": "Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)",
+    "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+    "14": "https://scripts.sil.org/OFL"
+  }
+}

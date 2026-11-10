@@ -1,0 +1,34 @@
+{
+  "fixture": "runtime-contract.riv",
+  "purpose": "CLI technical acceptance; not a formal MG_Club asset",
+  "cli": "rive 1.9.2",
+  "runtime": "rive_native 0.1.11",
+  "flutter": "rive 0.14.11",
+  "format": {
+    "major": 7,
+    "minor": 5
+  },
+  "bytes": 418028,
+  "sha256": "4bb57f3d12969f90ddc67799f62e3f408b8bc7a7db3f8a30c02edcd76d755ee4",
+  "sources": {
+    "cli-projects/runtime-contract/scene.rml": "af1db891fd2a489d649b08650ee023a5fa2e3d098f1dbb649cde742e4a8a3806",
+    "cli-projects/runtime-contract/rive.yaml": "8848e0e5b94d4a1cd287d8a5e1120fba7b406bde2cbee94671fc7c140f22ceb9",
+    "har-consumer/entry/src/main/resources/rawfile/Inter-Regular.ttf": "b1e3924f03e962a1572317b383a78e5adc5622fda14ae822a4ae562697f8d0bd"
+  },
+  "contract": {
+    "artboard": "CLI Contract",
+    "stateMachine": "bumpy",
+    "inputs": {
+      "bump": "trigger",
+      "enabled": "boolean",
+      "Level": "number"
+    },
+    "event": "cli_bump",
+    "textRun": "button_text"
+  },
+  "copies": {
+    "har-consumer/entry/src/main/resources/rawfile/runtime-contract.riv": "4bb57f3d12969f90ddc67799f62e3f408b8bc7a7db3f8a30c02edcd76d755ee4",
+    "flutter-comparison/assets/runtime-contract.riv": "4bb57f3d12969f90ddc67799f62e3f408b8bc7a7db3f8a30c02edcd76d755ee4"
+  },
+  "acceptance": "export provenance only; target-runtime import, rendering and interaction require a separate validation record"
+}

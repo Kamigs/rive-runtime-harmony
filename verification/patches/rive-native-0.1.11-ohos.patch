@@ -1,0 +1,468 @@
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/build/build_rive.sh b/ohos_rive/runtime/rive-native-0.1.11/build/build_rive.sh
+index fb37ae8..056af97 100755
+--- a/ohos_rive/runtime/rive-native-0.1.11/build/build_rive.sh
++++ b/ohos_rive/runtime/rive-native-0.1.11/build/build_rive.sh
+@@ -183,6 +183,7 @@ else
+                 RIVE_ARCH="${RIVE_ARCH:-universal}" # The simulator requires universal builds.
+                 ;;
+             "android") RIVE_OS="${RIVE_OS:-android}" ;;
++            "ohos") RIVE_OS="${RIVE_OS:-ohos}" ;;
+             "arm64") RIVE_ARCH="${RIVE_ARCH:-arm64}" ;;
+             "arm") RIVE_ARCH="${RIVE_ARCH:-arm}" ;;
+             "x64") RIVE_ARCH="${RIVE_ARCH:-x64}" ;;
+@@ -235,7 +236,9 @@ else
+     fi
+ 
+     RIVE_PREMAKE_ARGS="$RIVE_BUILD_SYSTEM --config=$RIVE_CONFIG --out=$RIVE_OUT $RIVE_PREMAKE_ARGS"
+-    if [[ $RIVE_OS = "android" ]]; then
++    if [[ $RIVE_OS = "ohos" ]]; then
++        RIVE_PREMAKE_ARGS="$RIVE_PREMAKE_ARGS --for_ohos"
++    elif [[ $RIVE_OS = "android" ]]; then
+         # Premake stopped supporting "--os=android".
+         # Use our own custom "--for_android" flag instead.
+         RIVE_PREMAKE_ARGS="$RIVE_PREMAKE_ARGS --for_android"
+@@ -270,8 +273,10 @@ if [ ! -f "$PREMAKE_INSTALL_DIR/premake5" ] && [ ! -f "$PREMAKE_INSTALL_DIR/prem
+         rm "$PREMAKE_ZIP"
+     else
+         echo Building Premake...
+-        rm -fr premake-core # Wipe out a prior checkout if it exists without a premake5 binary.
+-        git clone --depth 1 --branch $RIVE_PREMAKE_TAG https://github.com/premake/premake-core.git
++        # A lockfile-restored checkout must keep its pinned commit.
++        if [ ! -d premake-core/.git ]; then
++            git clone --depth 1 --branch $RIVE_PREMAKE_TAG https://github.com/premake/premake-core.git
++        fi
+         pushd premake-core > /dev/null
+         case "$HOST_MACHINE" in
+             mac_arm64) make -f Bootstrap.mak osx PLATFORM=ARM ;;
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/build/rive_build_config.lua b/ohos_rive/runtime/rive-native-0.1.11/build/rive_build_config.lua
+index a2254f3..0b34421 100644
+--- a/ohos_rive/runtime/rive-native-0.1.11/build/rive_build_config.lua
++++ b/ohos_rive/runtime/rive-native-0.1.11/build/rive_build_config.lua
+@@ -469,6 +469,118 @@ filter({})
+ -- needed in the first place (otherwise the build script would just be passing it in)
+ rive_target_os = os.target()
+ 
++newoption({
++    trigger = 'for_ohos',
++    description = 'Build with the OpenHarmony Native SDK (OHOS_NDK)',
++})
++
++-- building for harmony.
++if _OPTIONS['for_ohos'] then
++    rive_target_os = 'ohos'
++    system('android') -- Reuse Premake's GLES/ELF platform filters.
++    pic('on') -- Position-independent code is required for NDK libraries.
++
++    -- Detect the OHOS Native SDK
++    local OHOS_SDK_PATH = os.getenv('OHOS_NDK') or '<undefined>'
++    if OHOS_SDK_PATH == '<undefined>' then
++        error('OpenHarmony Native SDK path not found. Please set OHOS_NDK environment variable.')
++    end
++
++    -- OpenHarmony 工具链配置
++    local ohos_toolchain = OHOS_SDK_PATH .. '/llvm'
++    local ohos_sysroot = OHOS_SDK_PATH .. '/sysroot'
++
++    -- 根据架构设置目标
++    local target_arch = ''
++    if _OPTIONS['arch'] == 'arm64' then
++        target_arch = 'aarch64-unknown-linux-ohos'
++    elseif _OPTIONS['arch'] == 'arm' then
++        target_arch = 'armv7-unknown-linux-ohos'
++    elseif _OPTIONS['arch'] == 'x64' then
++        target_arch = 'x86_64-unknown-linux-ohos'
++    else
++        target_arch = 'x86_64-unknown-linux-ohos'  -- 默认
++    end
++
++    -- Windows requires extensions for executables
++    local exe_ext = ''
++     if os.host() == 'windows' then
++         exe_ext = '.exe'
++     end
++
++    -- 完整的工具链路径配置
++    local ohos_tools = {
++       cc = ohos_toolchain .. '/bin/' .. 'clang' .. exe_ext,
++       cxx = ohos_toolchain .. '/bin/' .. 'clang++' .. exe_ext,
++       ar = ohos_toolchain .. '/bin/llvm-ar' .. exe_ext,
++    }
++
++    -- 验证工具是否存在
++    for tool_name, tool_path in pairs(ohos_tools) do
++        local f = io.open(tool_path, 'r')
++        if f then
++            f:close()
++            print("Found " .. tool_name .. " at: " .. tool_path)
++        else
++            print("ERROR: " .. tool_name .. " not found at: " .. tool_path)
++            error("OpenHarmony toolchain not found: " .. tool_path)
++        end
++    end
++
++    premake.tools.ohos_ndk = {}
++
++    for k, v in pairs(premake.tools.clang) do
++        premake.tools.ohos_ndk[k] = v
++    end
++
++    function premake.tools.ohos_ndk.gettoolname(cfg, tool)
++        return ohos_tools[tool]
++    end
++
++    local premake_valid_tools = premake.action._list[_ACTION].valid_tools
++    if premake_valid_tools ~= nil then
++        if not premake_valid_tools['cc'] then
++            premake_valid_tools['cc'] = {}
++        end
++        table.insert(premake_valid_tools['cc'], 'ohos_ndk')
++    end
++
++    toolset('ohos_ndk')
++
++    buildoptions({
++        '--target=' .. target_arch,
++        '--sysroot=' .. ohos_sysroot,
++        '-fdata-sections',
++        '-ffunction-sections',
++        '-funwind-tables',
++        '-fstack-protector-strong',
++        '-no-canonical-prefixes',
++        '-D__MUSL__',
++    })
++
++    linkoptions({
++        '--target=' .. target_arch,
++        '--sysroot=' .. ohos_sysroot,
++        '-fdata-sections',
++        '-ffunction-sections',
++        '-funwind-tables',
++        '-fstack-protector-strong',
++        '-no-canonical-prefixes',
++        '-Wl,--fatal-warnings',
++        '-Wl,--gc-sections',
++        '-Wl,--no-undefined',
++        '-static-libstdc++',
++    })
++
++    defines({
++        'RIVE_OHOS',
++    })
++
++    filter({})
++end
++
++
++
+ -- Native Windows targets only. Android and wasm happen to build through ninja
+ -- on a Windows host too, but they retarget to the android_ndk/emsdk toolsets
+ -- below and would choke on these flags.
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/renderer/include/rive/renderer/gl/gles3.hpp b/ohos_rive/runtime/rive-native-0.1.11/renderer/include/rive/renderer/gl/gles3.hpp
+index e3686a9..8d978a7 100644
+--- a/ohos_rive/runtime/rive-native-0.1.11/renderer/include/rive/renderer/gl/gles3.hpp
++++ b/ohos_rive/runtime/rive-native-0.1.11/renderer/include/rive/renderer/gl/gles3.hpp
+@@ -17,10 +17,12 @@
+ #define glClearPixelLocalStorageuiEXT(...) RIVE_UNREACHABLE()
+ #endif
+ 
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+ #include <GLES3/gl3.h>
+ #include <GLES3/gl31.h>
++#ifndef RIVE_OHOS
+ #include <GLES3/gl3ext.h>
++#endif
+ #include <GLES2/gl2ext.h>
+ #endif
+ 
+@@ -131,7 +133,7 @@ extern void glProvokingVertexANGLE(GLenum provokeMode);
+ #define GL_COMPRESSED_RGBA_ASTC_12x12_KHR 0x93BD
+ #endif
+ 
+-#if defined(RIVE_ANDROID) || defined(RIVE_WEBGL)
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS) || defined(RIVE_WEBGL)
+ // GLES 3.1 functionality is pulled in as an extension. Define these to avoid
+ // compile errors, even if we won't use them.
+ #define GL_SHADER_STORAGE_BUFFER 0x90D2
+@@ -204,6 +206,9 @@ struct GLCapabilities
+     // Android ANGLE backed by SwiftShader can corrupt memory when resolving
+     // partial framebuffer regions. Resolve the full target as a workaround.
+     bool avoidPartialFramebufferBlits;
++    // DevEco's macOS GLES translator targets desktop GL 4.1, which lacks the
++    // GLSL ES 3.0 unpackHalf2x16 builtin it advertises to the guest.
++    bool needsSoftwareHalfUnpack;
+ 
+     // Extensions
+     bool ANGLE_base_vertex_base_instance_shader_builtin : 1;
+@@ -240,7 +245,14 @@ struct GLCapabilities
+     bool supportsETC2 : 1;
+ };
+ 
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
++#ifdef RIVE_OHOS
++// OHOS exports some of these names as functions from libGLES. Keep our
++// writable function-pointer slots local to this DSO to prevent ELF symbol
++// preemption from redirecting loader assignments into executable memory.
++#pragma GCC visibility push(hidden)
++#endif
++
+ // EXT_base_instance.
+ extern PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEEXTPROC
+     glDrawArraysInstancedBaseInstanceEXT;
+@@ -269,6 +281,10 @@ extern PFNGLCLEARPIXELLOCALSTORAGEUIEXTPROC glClearPixelLocalStorageuiEXT;
+ // KHR_parallel_shader_compilation
+ extern PFNGLMAXSHADERCOMPILERTHREADSKHRPROC glMaxShaderCompilerThreadsKHR;
+ 
++#ifdef RIVE_OHOS
++#pragma GCC visibility pop
++#endif
++
+ // Android doesn't load extension functions for us (also, possibly some
+ // extensions are reported as present but the functions don't actually exist,
+ // this call will clear the capabilities flags for extensions that don't load,
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/renderer/premake5_pls_renderer.lua b/ohos_rive/runtime/rive-native-0.1.11/renderer/premake5_pls_renderer.lua
+index a74e446..175b4e7 100644
+--- a/ohos_rive/runtime/rive-native-0.1.11/renderer/premake5_pls_renderer.lua
++++ b/ohos_rive/runtime/rive-native-0.1.11/renderer/premake5_pls_renderer.lua
+@@ -88,7 +88,7 @@ end
+ 
+ filter('system:android')
+ do
+-    defines({ 'RIVE_ANDROID' })
++    defines({ _OPTIONS['for_ohos'] and 'RIVE_OHOS' or 'RIVE_ANDROID' })
+ end
+ 
+ filter({ 'system:android', 'options:with_rive_canvas', 'options:not no_gl', 'options:not for_unreal' })
+@@ -223,7 +223,7 @@ else
+ end
+ nproc = nproc:gsub('%s+', '') -- remove whitespace
+ local python_ply = dependency.github('dabeaz/ply', '3.11')
+-local makecommand = 'make -C '
++local makecommand = 'make -f Makefile.rive -C '
+     .. path.getabsolute('src/shaders')
+     .. ' -j'
+     .. nproc
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_state.cpp b/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_state.cpp
+index 351d789..43f585e 100644
+--- a/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_state.cpp
++++ b/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_state.cpp
+@@ -47,7 +47,7 @@ void GLState::invalidate()
+     glPixelStorei(GL_PACK_ALIGNMENT, 4);
+     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+ 
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+     // D3D and Metal both have a provoking vertex convention of "first" for flat
+     // varyings, and it's very costly for ANGLE to implement the OpenGL
+     // convention of "last" on these backends. To workaround this, ANGLE
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_utils.cpp b/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_utils.cpp
+index 48a932a..c99b8aa 100644
+--- a/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_utils.cpp
++++ b/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/gl_utils.cpp
+@@ -129,6 +129,33 @@ GLuint CompileShader(GLuint type,
+         shaderSource << "#define " << GLSL_GL_RENDERER_MALI << '\n';
+     }
+     shaderSource << rive::gpu::glsl::glsl << "\n";
++#ifdef RIVE_OHOS
++    if (capabilities.needsSoftwareHalfUnpack)
++    {
++        // IEEE 754 binary16 -> binary32, including signed zero, subnormals,
++        // infinities and NaNs. Only used by the affected DevEco translator.
++        shaderSource << R"GLSL(
++highp float riveOhosHalfToFloat(highp uint h) {
++    highp uint sign = (h & 0x8000u) << 16u;
++    highp uint exponent = (h >> 10u) & 31u;
++    highp uint fraction = h & 1023u;
++    if (exponent == 0u) {
++        highp float value = float(fraction) * (1.0 / 16777216.0);
++        return uintBitsToFloat(floatBitsToUint(value) | sign);
++    }
++    highp uint bits = exponent == 31u
++        ? (0x7f800000u | (fraction << 13u))
++        : (((exponent + 112u) << 23u) | (fraction << 13u));
++    return uintBitsToFloat(sign | bits);
++}
++highp vec2 riveOhosUnpackHalf2x16(highp uint value) {
++    return vec2(riveOhosHalfToFloat(value & 65535u),
++                riveOhosHalfToFloat(value >> 16u));
++}
++#define unpackHalf2x16 riveOhosUnpackHalf2x16
++)GLSL";
++    }
++#endif
+     for (size_t i = 0; i < numInputSources; ++i)
+     {
+         shaderSource << inputSources[i] << "\n";
+diff --git a/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/render_context_gl_impl.cpp b/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/render_context_gl_impl.cpp
+index 1177ff3..416798c 100644
+--- a/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/render_context_gl_impl.cpp
++++ b/ohos_rive/runtime/rive-native-0.1.11/renderer/src/gl/render_context_gl_impl.cpp
+@@ -117,7 +117,7 @@ static RenderContextGLImpl::FeatherAtlasRenderType selectFeatherAtlasRenderType(
+             }
+             [[fallthrough]];
+         case FeatherAtlasRenderType::r8PixelLocalStorageEXT:
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+             if (capabilities.EXT_shader_pixel_local_storage)
+             {
+                 return FeatherAtlasRenderType::r8PixelLocalStorageEXT;
+@@ -125,7 +125,7 @@ static RenderContextGLImpl::FeatherAtlasRenderType selectFeatherAtlasRenderType(
+ #endif
+             [[fallthrough]];
+         case FeatherAtlasRenderType::r32uiPixelLocalStorageANGLE:
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+             if (capabilities.ANGLE_shader_pixel_local_storage_coherent)
+             {
+                 return FeatherAtlasRenderType::r32uiPixelLocalStorageANGLE;
+@@ -494,7 +494,7 @@ void RenderContextGLImpl::buildFeatherAtlasRenderPipelines()
+                 gpu::BlendEquation::none;
+             break;
+         case FeatherAtlasRenderType::r8PixelLocalStorageEXT:
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+             defines.push_back(GLSL_ATLAS_RENDER_TARGET_R8_PLS_EXT);
+             m_featherAtlasFillPipelineState.blendEquation =
+                 gpu::BlendEquation::none;
+@@ -505,7 +505,7 @@ void RenderContextGLImpl::buildFeatherAtlasRenderPipelines()
+ #endif
+             break;
+         case FeatherAtlasRenderType::r32uiPixelLocalStorageANGLE:
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+             defines.push_back(GLSL_ATLAS_RENDER_TARGET_R32UI_PLS_ANGLE);
+             m_featherAtlasFillPipelineState.blendEquation =
+                 gpu::BlendEquation::none;
+@@ -578,7 +578,7 @@ void RenderContextGLImpl::buildFeatherAtlasRenderPipelines()
+         if (m_featherAtlasRenderType ==
+             FeatherAtlasRenderType::r8PixelLocalStorageEXT)
+         {
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+             // EXT_shader_pixel_local_storage doesn't support clearing, so we
+             // also need to build a program to clear it at the beginning of the
+             // atlas render pass.
+@@ -1586,7 +1586,7 @@ void RenderContextGLImpl::resizeFeatherAtlasTexture(uint32_t width,
+         }
+         case FeatherAtlasRenderType::r8PixelLocalStorageEXT:
+         {
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+             // EXT_shader_pixel_local_storage can just resolve and output the
+             // render pass at the end of the PLS render pass.
+             glFramebufferTexture2D(GL_FRAMEBUFFER,
+@@ -1601,7 +1601,7 @@ void RenderContextGLImpl::resizeFeatherAtlasTexture(uint32_t width,
+         }
+         case FeatherAtlasRenderType::r32uiPixelLocalStorageANGLE:
+         {
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+             // ANGLE_shader_pixel_local_storage can just resolve and output the
+             // render pass at the end of the PLS render pass.
+             assert(m_featherAtlasRenderTexture != 0);
+@@ -2500,7 +2500,7 @@ void RenderContextGLImpl::flush(const FlushDescriptor& desc)
+             }
+             case FeatherAtlasRenderType::r8PixelLocalStorageEXT:
+             {
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+                 glEnable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);
+                 // EXT_shader_pixel_local_storage doesn't support clearing.
+                 // Render the clear color.
+@@ -2515,7 +2515,7 @@ void RenderContextGLImpl::flush(const FlushDescriptor& desc)
+             }
+             case FeatherAtlasRenderType::r32uiPixelLocalStorageANGLE:
+             {
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+                 glBeginPixelLocalStorageANGLE(
+                     1,
+                     std::array<GLenum, 1>{GL_LOAD_OP_ZERO_ANGLE}.data());
+@@ -2676,7 +2676,7 @@ void RenderContextGLImpl::flush(const FlushDescriptor& desc)
+             }
+             case FeatherAtlasRenderType::r8PixelLocalStorageEXT:
+             {
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+                 glDisable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);
+ #else
+                 RIVE_UNREACHABLE();
+@@ -2685,7 +2685,7 @@ void RenderContextGLImpl::flush(const FlushDescriptor& desc)
+             }
+             case FeatherAtlasRenderType::r32uiPixelLocalStorageANGLE:
+             {
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+                 // Discard PLS now that we've resolved it to GL_R8.
+                 glEndPixelLocalStorageANGLE(
+                     1,
+@@ -3329,6 +3329,10 @@ std::unique_ptr<RenderContext> RenderContextGLImpl::MakeContext(
+         reinterpret_cast<const char*>(glGetString(rendererToken));
+ 
+     GLCapabilities capabilities{};
++#ifdef RIVE_OHOS
++    capabilities.needsSoftwareHalfUnpack =
++        strstr(glVersionStr, "OpenGL ES 3.0 (4.1 Metal") != nullptr;
++#endif
+ #ifdef RIVE_WEBGL
+     capabilities.isGLES = true;
+     // If GL_UNMASKED_RENDERER_WEBGL says "ANGLE", that means we are running on
+@@ -3347,7 +3351,7 @@ std::unique_ptr<RenderContext> RenderContextGLImpl::MakeContext(
+     capabilities.isAdreno = strstr(rendererString, "Adreno");
+     capabilities.isMali = strstr(rendererString, "Mali");
+     capabilities.isPowerVR = strstr(rendererString, "PowerVR");
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+     capabilities.avoidPartialFramebufferBlits =
+         capabilities.isANGLESystemDriver &&
+         strstr(rendererString, "SwiftShader") != nullptr;
+@@ -3481,14 +3485,14 @@ std::unique_ptr<RenderContext> RenderContextGLImpl::MakeContext(
+         }
+         else if (strcmp(ext, "GL_ANGLE_shader_pixel_local_storage") == 0)
+         {
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+             capabilities.ANGLE_shader_pixel_local_storage = true;
+ #endif
+         }
+         else if (strcmp(ext, "GL_ANGLE_shader_pixel_local_storage_coherent") ==
+                  0)
+         {
+-#ifndef RIVE_ANDROID
++#if !defined(RIVE_ANDROID) && !defined(RIVE_OHOS)
+             capabilities.ANGLE_shader_pixel_local_storage_coherent = true;
+ #endif
+         }
+@@ -3788,11 +3792,21 @@ std::unique_ptr<RenderContext> RenderContextGLImpl::MakeContext(
+         capabilities.INTEL_fragment_shader_ordering = false;
+     }
+ 
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+     // On Android we need to explicitly load the extension functions. This will
+     // additionally clear the capabilities flags for any extension that could
+     // not load.
+     LoadAndValidateGLESExtensions(&capabilities);
++#ifdef RIVE_OHOS
++    if (capabilities.needsSoftwareHalfUnpack)
++    {
++        // The same DevEco translator advertises KHR advanced blending, but
++        // its desktop GL 4.1 shader compiler rejects the required extension.
++        // Use the renderer's existing destination-read/MSAA blend path.
++        capabilities.KHR_blend_equation_advanced = false;
++        capabilities.KHR_blend_equation_advanced_coherent = false;
++    }
++#endif
+ #endif
+ 
+     if (strstr(rendererString, "ANGLE Metal Renderer") != nullptr &&
+@@ -3833,7 +3847,7 @@ std::unique_ptr<RenderContext> RenderContextGLImpl::MakeContext(
+ 
+     if (!contextOptions.disablePixelLocalStorage)
+     {
+-#ifdef RIVE_ANDROID
++#if defined(RIVE_ANDROID) || defined(RIVE_OHOS)
+         if (capabilities.EXT_shader_pixel_local_storage &&
+             (capabilities.ARM_shader_framebuffer_fetch ||
+              capabilities.EXT_shader_framebuffer_fetch))

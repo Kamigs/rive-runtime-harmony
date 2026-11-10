@@ -1,0 +1,21 @@
+Rive Runtime for HarmonyOS
+
+Rive runtime and renderer: Copyright Rive, MIT License (see LICENSE).
+Community HarmonyOS adaptation retains the original Huawei/OpenHarmony
+copyright notices and Apache-2.0 license headers in individual files.
+Licenses are determined by each component's original license, not by this notice.
+
+Runtime source: official rive_native 0.1.11 archive, with documented HarmonyOS
+platform patches. Upstream attribution and source commits are in SOURCE.json.
+
+Linked dependencies include HarfBuzz, SheenBidi, Yoga, miniaudio and the
+OpenHarmony bounds-checking functions. Their license texts are preserved under
+licenses/dependencies/ and in the HAR rawfile/rive_licenses/ payload.
+SDK/LLVM notices for libc++_shared.so are preserved under licenses/.
+The original community NOTICE is retained verbatim as licenses/upstream-NOTICE;
+its Android tooling references describe the original project, not this build.
+
+Example fonts retain their OFL notices in each example's assets/licenses or
+rawfile/licenses directory. Official example asset origins and SHA-256 values
+are recorded in verification/fixtures-manifest.json. Runtime licensing does not
+grant additional commercial rights to example artwork or fonts.

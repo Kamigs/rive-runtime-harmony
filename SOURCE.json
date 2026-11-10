@@ -1,0 +1,40 @@
+{
+  "name": "rive-runtime-harmony",
+  "package": "@ohos/rive",
+  "version": "1.1.4-rn.0.1.11",
+  "support": {
+    "api": 26,
+    "target_api": 26,
+    "abi": [
+      "arm64-v8a"
+    ],
+    "build_host": "macOS arm64"
+  },
+  "source": {
+    "extracted_from_commit": "52b666d4d3c6219ee4b11747660eb5f2a3f5ee16",
+    "runtime_har_baseline_commit": "b6a2d88ea408f66b0a2897fcd8efb5079a7c24d1",
+    "community_repository": "https://gitcode.com/CPF-ApplicationTPC/openharmony_tpc_samples",
+    "community_subdirectory": "ohos_rive",
+    "community_commit": "4b1609b2bdbf34e46ec37155f8aa5cc9a3612b2f",
+    "old_engine_submodule_commit": "f27a90050386b5428589bddb9a4ce5e248e0e8b3",
+    "runtime_archive": "https://pub.dev/api/archives/rive_native-0.1.11.tar.gz",
+    "runtime_archive_sha256": "f1ae8a9ec4dab6b803fed006745e55c7de6cd568bd30750d4a6770479b9f8294",
+    "runtime_subdirectory": "runtime/",
+    "published_api_baseline": "@ohos/rive 1.0.4",
+    "published_har_sha256": "dd9d286869a702340941e60f57480909518dd885e15fad03395032d1c32851ec"
+  },
+  "preserved": {
+    "arkts_declaration_files": 71,
+    "runtime_core": "rive_native 0.1.11",
+    "node_api_exports": "unchanged"
+  },
+  "historical_artifacts": {
+    "har_1_1_3_sha256": "50d1f06f72c484ff6bd0609801df0d01cd1c291e4ccf6139ddc90c0366d36a65",
+    "hostfix_hap_1_1_3_sha256": "d44c88069693321aa5c3a27e5ee2b028c8800bf6572040fb5e3d7edf6faa73dc"
+  },
+  "dependencies": "dependencies.lock.json",
+  "extraction_manifest": "verification/extraction-manifest.json",
+  "patches": "verification/patches/",
+  "validation": "docs/VALIDATION.md",
+  "distribution": "local source and artifacts; not published to OHPM"
+}

@@ -1,0 +1,22 @@
+{
+  "types": "",
+  "keywords": [
+    "OpenHarmony",
+    "HarmonyOS",
+    "rive"
+  ],
+  "author": "ohos_tpc",
+  "description": "HarmonyOS port of rive_native 0.1.11 runtime; ArkTS API compatible with @ohos/rive 1.0.4",
+  "main": "Index.ets",
+  "type": "module",
+  "version": "1.1.4-rn.0.1.11",
+  "tags": [
+    "Animation",
+    "Rive"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "libohos_rive.so": "file:./src/main/cpp/types/libohos_rive"
+  },
+  "name": "@ohos/rive"
+}

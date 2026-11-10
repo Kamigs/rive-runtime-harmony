@@ -1,0 +1,6 @@
+{
+  "modelVersion": "5.0.2",
+  "description": "Standalone HarmonyOS Rive runtime build",
+  "dependencies": {},
+  "devDependencies": {}
+}

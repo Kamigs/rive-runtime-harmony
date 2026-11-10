@@ -1,0 +1,24 @@
+--- a/contrib/zlib/zutil.h
++++ b/contrib/zlib/zutil.h
+@@ -118,7 +118,7 @@
+ #  endif
+ #endif
+ 
+-#if defined(MACOS) || defined(TARGET_OS_MAC)
++#if (defined(MACOS) || defined(TARGET_OS_MAC)) && !defined(__APPLE__)
+ #  define OS_CODE  0x07
+ #  ifndef Z_SOLO
+ #    if defined(__MWERKS__) && __dest_os != __be_os && __dest_os != __win32_os
+--- a/contrib/libzip/mkstemp.c
++++ b/contrib/libzip/mkstemp.c
+@@ -30,6 +30,10 @@
+  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  * SUCH DAMAGE.
+  */
++
++#ifndef _WIN32
++#include <unistd.h>
++#endif
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>

@@ -1,0 +1,156 @@
+Rive
+Copyright 2020-2024 Rive
+
+This product is licensed under the MIT License.
+See the LICENSE file for the full license text.
+
+==============================================================================
+
+This software contains code from the following third-party projects:
+
+==============================================================================
+RIVE RUNTIME
+==============================================================================
+The rive-runtime submodule is included in this project.
+
+  Copyright (c) 2020 Rive
+
+  Licensed under the MIT License.
+  See submodules/rive-runtime/LICENSE for details.
+
+==============================================================================
+ANDROID OPEN SOURCE PROJECT
+==============================================================================
+This project uses various AndroidX libraries and the Android Gradle Plugin.
+
+  Copyright (C) 2018 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+==============================================================================
+KOTLIN
+==============================================================================
+This project uses the Kotlin programming language and related tools.
+
+  Copyright 2010-2024 JetBrains s.r.o. and Kotlin Programming Language contributors.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/JetBrains/kotlin/blob/master/license/LICENSE.txt
+
+==============================================================================
+RELINKER
+==============================================================================
+This project uses ReLinker for loading native libraries.
+
+  Copyright 2015-2021 KeepSafe Software, Inc.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/KeepSafe/ReLinker/blob/master/LICENSE
+
+==============================================================================
+VOLLEY
+==============================================================================
+This project uses Volley for HTTP requests.
+
+  Copyright (C) 2011 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/google/volley/blob/master/LICENSE
+
+==============================================================================
+KOTEST
+==============================================================================
+This project uses Kotest for testing.
+
+  Copyright 2010-2024 the Kotest authors.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/kotest/kotest/blob/master/LICENSE
+
+==============================================================================
+MOCKK
+==============================================================================
+This project uses MockK for mocking in tests.
+
+  Copyright 2017-2024 MockK contributors.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/mockk/mockk/blob/master/LICENSE
+
+==============================================================================
+LEAKCANARY
+==============================================================================
+This project uses LeakCanary for memory leak detection.
+
+  Copyright 2015-2024 Square, Inc.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/square/leakcanary/blob/main/LICENSE.txt
+
+==============================================================================
+DOKKA
+==============================================================================
+This project uses Dokka for documentation generation.
+
+  Copyright 2014-2024 JetBrains s.r.o. and Dokka project contributors.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/Kotlin/dokka/blob/master/LICENSE
+
+==============================================================================
+GRADLE GIT VERSION
+==============================================================================
+This project uses the Gradle Git Version plugin.
+
+  Copyright 2015-2024 Palantir Technologies, Inc.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/palantir/gradle-git-version/blob/develop/LICENSE
+
+==============================================================================
+VANNIKTECH MAVEN PUBLISH
+==============================================================================
+This project uses the Vanniktech Maven Publish plugin.
+
+  Copyright 2018-2024 Niklas Baudy, Vanniktech
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/vanniktech/gradle-maven-publish-plugin/blob/main/LICENSE
+
+==============================================================================
+DROPSHOTS
+==============================================================================
+This project uses Dropshots for screenshot testing.
+
+  Copyright 2022-2024 Dropbox, Inc.
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/dropbox/dropshots/blob/main/LICENSE
+
+==============================================================================
+REBUGGER
+==============================================================================
+This project uses Rebugger for debugging Compose recompositions.
+
+  Copyright 2022-2024 theapache64
+
+  Licensed under the Apache License, Version 2.0.
+  See https://github.com/theapache64/rebugger/blob/master/LICENSE
+
+==============================================================================
+
+For any licenses not listed here, please refer to the respective project's
+repository for complete license information.
+
+==============================================================================
+

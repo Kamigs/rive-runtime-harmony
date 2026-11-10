@@ -1,0 +1,8 @@
+{
+  "archive": "https://pub.dev/api/archives/rive_native-0.1.11.tar.gz",
+  "archive_sha256": "f1ae8a9ec4dab6b803fed006745e55c7de6cd568bd30750d4a6770479b9f8294",
+  "subdirectory": "runtime/",
+  "files": 2217,
+  "flutter_package": "rive 0.14.11",
+  "native_package": "rive_native 0.1.11"
+}

@@ -1,0 +1,10 @@
+/node_modules/
+/oh_modules/
+/.preview/
+/build/
+/.cxx/
+/.test/
+/BuildProfile.ets
+/src/main/cpp/out/
+/src/main/cpp/dependencies/
+/src/main/cpp/boundscheck/third_party_bounds_checking_function/

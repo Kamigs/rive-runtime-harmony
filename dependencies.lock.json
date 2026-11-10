@@ -1,0 +1,42 @@
+[
+  {
+    "path": "library/src/main/cpp/boundscheck/third_party_bounds_checking_function",
+    "sha": "2ae82839ecaaa7d031e66ccbd2076d671acfd615",
+    "remote": "https://gitee.com/openharmony/third_party_bounds_checking_function.git"
+  },
+  {
+    "path": "runtime/rive-native-0.1.11/build/dependencies/premake-core",
+    "sha": "ba2c383c0456aa75d1b93faf62f4aec2691f23b2",
+    "remote": "https://github.com/premake/premake-core.git"
+  },
+  {
+    "path": "runtime/rive-native-0.1.11/build/dependencies/premake-ninja",
+    "sha": "14b7ca33e532a6ce35a5ac9498e8f16e64c2fa03",
+    "remote": "https://github.com/rive-app/premake-ninja.git"
+  },
+  {
+    "path": "library/src/main/cpp/dependencies/rive-app_harfbuzz_rive_13.1.1",
+    "sha": "08d34675f64b1ac4880f4f10c9fd474a56dd4399",
+    "remote": "https://github.com/rive-app/harfbuzz.git"
+  },
+  {
+    "path": "library/src/main/cpp/dependencies/Tehreer_SheenBidi_v2.6",
+    "sha": "adfccc46504b1be37b8894f064121c56c31312f7",
+    "remote": "https://gitee.com/yp9522/SheenBidi.git"
+  },
+  {
+    "path": "library/src/main/cpp/dependencies/dabeaz_ply_3.11",
+    "sha": "0f398b72618c1564d71f7dc0558e6722b241875a",
+    "remote": "https://github.com/dabeaz/ply.git"
+  },
+  {
+    "path": "library/src/main/cpp/dependencies/rive-app_miniaudio_rive_changes_5",
+    "sha": "4e580793811fce6041d59e3bdf5f1f9cdff2e837",
+    "remote": "https://gitee.com/yp9522/miniaudio.git"
+  },
+  {
+    "path": "library/src/main/cpp/dependencies/rive-app_yoga_rive_changes_v2_0_1_2_grid",
+    "sha": "bd261943260d957df73189a3d6f4dab4cd55947c",
+    "remote": "https://github.com/rive-app/yoga.git"
+  }
+]

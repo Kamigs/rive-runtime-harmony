@@ -1,0 +1,65 @@
+{
+  "rive_archive_sha256": "0319f216b753f5d8f3f624413cd5b5a18f6ed8f0a677f80d97b53ecd3d2080c3",
+  "assets": [
+    {
+      "file": "vehicles.riv",
+      "sha256": "46bb250cde0b0223a15faddac33d08fa00d4b6acebc2e4e827391ae0113768a3",
+      "source": "https://cdn.rive.app/animations/vehicles.riv"
+    },
+    {
+      "file": "skills.riv",
+      "sha256": "7759427fbbbee2be3d14de9a039f0ddced2333f102bbeac31ce5cc4ac3ab0576",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/skills.riv"
+    },
+    {
+      "file": "rating.riv",
+      "sha256": "921a46e07526e541e8a436988884c0840b5ffa894b5a79a3396026a11fc44403",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/rating.riv"
+    },
+    {
+      "file": "embedded_text.riv",
+      "sha256": "d963a91128cee551ffd168e554a5d410a663c97c85bb0aec69c3d89e0e8ade48",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/embedded_text.riv"
+    },
+    {
+      "file": "rewards.riv",
+      "sha256": "63e543092899e68a699ea043b90febc8876454e555fa2990908d24cc1a188cfc",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/rewards.riv"
+    },
+    {
+      "file": "rive_rendering_test.riv",
+      "sha256": "9414b8ca98fceb49e59a906d0cc24772d55b3d52e7b29e77c25c7a8e811e89ba",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/rive_rendering_test.riv"
+    },
+    {
+      "file": "layout_test.riv",
+      "sha256": "a011ae14195aff1d916cc61ac69fe1c109d20a13628c0cb047d0a063dfeb64a4",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/layout_test.riv"
+    },
+    {
+      "file": "runtime_nested_inputs.riv",
+      "sha256": "61a14d72c5b9694b675d729e756fd4e3d0a075bf76ed545d07b62c301af962a0",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/runtime_nested_inputs.riv"
+    },
+    {
+      "file": "url_event_button.riv",
+      "sha256": "3712f400f918ce58b387c38841b9691dd99eeb7fa1f85a6387b8f96fec4578e1",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/url_event_button.riv"
+    },
+    {
+      "file": "electrified_button_nested_text.riv",
+      "sha256": "23c575fcdd7342988b271e0a742936557af8e70ac7659b98920d2531759ca33a",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/electrified_button_nested_text.riv"
+    },
+    {
+      "file": "Inter-Regular.ttf",
+      "sha256": "b1e3924f03e962a1572317b383a78e5adc5622fda14ae822a4ae562697f8d0bd",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/fonts/Inter-Regular.ttf"
+    },
+    {
+      "file": "JetBrainsMono.ttf",
+      "sha256": "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda",
+      "source": "https://pub.dev/api/archives/rive-0.14.11.tar.gz#example/assets/fonts/JetBrains Mono.ttf"
+    }
+  ]
+}

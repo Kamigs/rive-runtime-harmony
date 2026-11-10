@@ -1,0 +1,98 @@
+<Rive version="1" kind="fragment">
+  <!-- Technical contract for the retained OHPM 1.0.4 input API; deliberately uses classic inputs. -->
+  <Artboard name="CLI Contract" id="0:2" width="400" height="240" defaultStateMachineId="0:7" styleId="0:5">
+    <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+    <Fill name="Background"><SolidColor colorValue="FF162438"/></Fill>
+    <Shape name="Card" id="0:10" x="200" y="130">
+      <Rectangle width="120" height="70" cornerRadiusTL="16"/>
+      <Fill><SolidColor id="0:11" colorValue="FF54718D"/></Fill>
+    </Shape>
+    <Shape name="Loop marker" id="0:20" x="40" y="70">
+      <Rectangle width="18" height="10" cornerRadiusTL="5"/>
+      <Fill><SolidColor colorValue="FFFFCC66"/></Fill>
+    </Shape>
+    <Text name="Title" x="20" y="18">
+      <TextStylePaint id="0:31" fontSize="18" fontAssetId="0:90"><Fill><SolidColor colorValue="FFFFFFFF"/></Fill></TextStylePaint>
+      <TextValueRun styleId="0:31" text="Rive CLI / runtime 0.1.11" name="title"/>
+    </Text>
+    <Text name="Editable label" x="20" y="202">
+      <TextStylePaint id="0:32" fontSize="20" fontAssetId="0:90"><Fill><SolidColor colorValue="FFFFFFFF"/></Fill></TextStylePaint>
+      <TextValueRun styleId="0:32" text="MG CLUB" name="button_text"/>
+    </Text>
+    <Event name="cli_bump" id="0:60"/>
+    <StateMachine name="bumpy" id="0:7">
+      <StateMachineTrigger name="bump" id="0:40"/>
+      <StateMachineBool name="enabled" id="0:41"/>
+      <StateMachineNumber name="Level" value="1" id="0:42"/>
+      <StateMachineListenerSingle targetId="0:10" listenerTypeValue="click" name="Tap card">
+        <ListenerTriggerChange inputId="0:40"/>
+      </StateMachineListenerSingle>
+      <StateMachineLayer name="Bounce" id="0:8">
+        <AnyState x="200" y="-120"/><ExitState x="400" y="-120"/>
+        <EntryState x="0" y="0"><StateTransition stateToId="0:12"/></EntryState>
+        <AnimationState animationId="0:50" id="0:12" x="200" y="0">
+          <StateTransition stateToId="0:13"><TransitionTriggerCondition inputId="0:40"/></StateTransition>
+        </AnimationState>
+        <AnimationState animationId="0:51" id="0:13" x="400" y="0" reset="true">
+          <StateMachineFireEvent eventId="0:60"/>
+          <StateTransition stateToId="0:12" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"/>
+        </AnimationState>
+      </StateMachineLayer>
+      <StateMachineLayer name="Enabled" id="0:9">
+        <AnyState x="200" y="-120"/><ExitState x="400" y="-120"/>
+        <EntryState><StateTransition stateToId="0:14"/></EntryState>
+        <AnimationState animationId="0:52" id="0:14" x="200" y="0">
+          <StateTransition stateToId="0:15"><TransitionBoolCondition inputId="0:41" opValue="equal"/></StateTransition>
+        </AnimationState>
+        <AnimationState animationId="0:53" id="0:15" x="400" y="0">
+          <StateTransition stateToId="0:14"><TransitionBoolCondition inputId="0:41" opValue="notEqual"/></StateTransition>
+        </AnimationState>
+      </StateMachineLayer>
+      <StateMachineLayer name="Size" id="0:16">
+        <AnyState x="200" y="-120"/><ExitState x="400" y="-120"/>
+        <EntryState><StateTransition stateToId="0:17"/></EntryState>
+        <AnimationState animationId="0:54" id="0:17" x="200" y="0">
+          <StateTransition stateToId="0:18"><TransitionNumberCondition inputId="0:42" opValue="greaterThanOrEqual" value="2"/></StateTransition>
+        </AnimationState>
+        <AnimationState animationId="0:55" id="0:18" x="400" y="0">
+          <StateTransition stateToId="0:17"><TransitionNumberCondition inputId="0:42" opValue="lessThan" value="2"/></StateTransition>
+        </AnimationState>
+      </StateMachineLayer>
+      <StateMachineLayer name="Loop" id="0:21">
+        <AnyState x="200" y="-120"/><ExitState x="400" y="-120"/>
+        <EntryState><StateTransition stateToId="0:22"/></EntryState>
+        <AnimationState animationId="0:56" id="0:22" x="200" y="0"/>
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation name="Idle" id="0:50" duration="60">
+      <KeyedObject objectId="0:10"><KeyedProperty property="y"><KeyFrameDouble frame="0" value="130"/></KeyedProperty></KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation name="Bounce" id="0:51" duration="60">
+      <KeyedObject objectId="0:10"><KeyedProperty property="y">
+        <KeyFrameDouble frame="0" value="130" interpolationType="linear"/>
+        <KeyFrameDouble frame="30" value="105" interpolationType="linear"/>
+        <KeyFrameDouble frame="60" value="130"/>
+      </KeyedProperty></KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation name="Off" id="0:52" duration="1">
+      <KeyedObject objectId="0:11"><KeyedProperty property="colorValue"><KeyFrameColor frame="0" value="FF54718D"/></KeyedProperty></KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation name="On" id="0:53" duration="1">
+      <KeyedObject objectId="0:11"><KeyedProperty property="colorValue"><KeyFrameColor frame="0" value="FF25B68C"/></KeyedProperty></KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation name="Small" id="0:54" duration="1">
+      <KeyedObject objectId="0:10"><KeyedProperty property="scaleX"><KeyFrameDouble frame="0" value="1"/></KeyedProperty></KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation name="Large" id="0:55" duration="1">
+      <KeyedObject objectId="0:10"><KeyedProperty property="scaleX"><KeyFrameDouble frame="0" value="1.5"/></KeyedProperty></KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation name="Loop" id="0:56" duration="120" loopValue="loop">
+      <KeyedObject objectId="0:20"><KeyedProperty property="x">
+        <KeyFrameDouble frame="0" value="40" interpolationType="linear"/>
+        <KeyFrameDouble frame="60" value="360" interpolationType="linear"/>
+        <KeyFrameDouble frame="120" value="40"/>
+      </KeyedProperty></KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <FontAsset file="../../har-consumer/entry/src/main/resources/rawfile/Inter-Regular.ttf" name="Inter" id="0:90"/>
+</Rive>

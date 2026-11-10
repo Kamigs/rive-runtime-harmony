@@ -1,0 +1,17 @@
+name: rive_comparison
+description: Official Rive 0.14.11 / rive_native 0.1.11 comparison host
+publish_to: none
+version: 1.0.0+1
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  rive: 0.14.11
+  rive_native: 0.1.11
+dev_dependencies:
+  flutter_lints: ^6.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

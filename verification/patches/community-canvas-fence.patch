@@ -1,0 +1,83 @@
+diff --git a/ohos_rive/library/src/main/cpp/src/models/worker_impl.cpp b/ohos_rive/library/src/main/cpp/src/models/worker_impl.cpp
+index 38ca06e..b7e0bf3 100644
+--- a/ohos_rive/library/src/main/cpp/src/models/worker_impl.cpp
++++ b/ohos_rive/library/src/main/cpp/src/models/worker_impl.cpp
+@@ -26,6 +26,9 @@
+ #include <native_drawing/drawing_rect.h>
+ #include <native_window/external_window.h>
+ #include <sys/mman.h>
++#include <poll.h>
++#include <unistd.h>
++#include <cerrno>
+ 
+ namespace ohos_rive {
+ // R6.3: bounded wait for the JS ADVANCE/DRAW handshake. Only hit on the abnormal
+@@ -392,15 +395,33 @@ bool CanvasWorkerImpl::requestAndPrepareBuffer(NativeWindowBuffer **outBuffer,
+                                                BufferHandle **outBufferHandle,
+                                                uint32_t **outMappedAddr) const
+ {
+-    int fenceFd = 0;
++    int fenceFd = -1;
+     int ret = OH_NativeWindow_NativeWindowRequestBuffer(m_nativeWindow, outBuffer, &fenceFd);
+     if (ret != 0 || *outBuffer == nullptr) {
+         LOGE("flush: request buffer failed");
+         return false;
+     }
+ 
++    // RequestBuffer returns the consumer's release fence. CPU writes must wait
++    // until that consumer has finished reading the buffer; it is not the fence
++    // to pass back to FlushBuffer after producing a new frame.
++    if (fenceFd >= 0) {
++        pollfd fence{fenceFd, POLLIN, 0};
++        int waitResult;
++        do {
++            waitResult = poll(&fence, 1, 3000);
++        } while (waitResult < 0 && (errno == EINTR || errno == EAGAIN));
++        close(fenceFd);
++        if (waitResult <= 0 || !(fence.revents & POLLIN)) {
++            LOGE("flush: consumer fence wait failed (%{public}d)", waitResult);
++            OH_NativeWindow_NativeWindowAbortBuffer(m_nativeWindow, *outBuffer);
++            return false;
++        }
++    }
++
+     *outBufferHandle = OH_NativeWindow_GetBufferHandleFromNative(*outBuffer);
+     if (!*outBufferHandle) {
++        OH_NativeWindow_NativeWindowAbortBuffer(m_nativeWindow, *outBuffer);
+         return false;
+     }
+ 
+@@ -408,10 +429,11 @@ bool CanvasWorkerImpl::requestAndPrepareBuffer(NativeWindowBuffer **outBuffer,
+         mmap(nullptr, (*outBufferHandle)->size, PROT_READ | PROT_WRITE, MAP_SHARED, (*outBufferHandle)->fd, 0));
+     if (*outMappedAddr == MAP_FAILED) {
+         LOGE("flush: mmap failed");
++        OH_NativeWindow_NativeWindowAbortBuffer(m_nativeWindow, *outBuffer);
+         return false;
+     }
+ 
+-    *outFenceFd = fenceFd;
++    *outFenceFd = -1; // CPU copy completes synchronously before FlushBuffer.
+     return true;
+ }
+ 
+@@ -467,6 +489,7 @@ void CanvasWorkerImpl::flush(DrawableThreadState *)
+     int32_t bitmapStrideBytes = 0;
+     if (!getBitmapData(&bitmapAddr, &bitmapWidth, &bitmapHeight, &bitmapStrideBytes)) {
+         munmap(mappedAddr, bufferHandle->size);
++        OH_NativeWindow_NativeWindowAbortBuffer(m_nativeWindow, buffer);
+         return;
+     }
+ 
+@@ -482,7 +505,11 @@ void CanvasWorkerImpl::flush(DrawableThreadState *)
+     }
+ 
+     Region region{nullptr, 0};
+-    OH_NativeWindow_NativeWindowFlushBuffer(m_nativeWindow, buffer, fenceFd, region);
++    int ret = OH_NativeWindow_NativeWindowFlushBuffer(m_nativeWindow, buffer, fenceFd, region);
++    if (ret != 0) {
++        LOGE("flush: submit buffer failed (%{public}d)", ret);
++        OH_NativeWindow_NativeWindowAbortBuffer(m_nativeWindow, buffer);
++    }
+ 
+     munmap(mappedAddr, bufferHandle->size);
+ }

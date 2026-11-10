@@ -1,0 +1,11 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "API26 standalone Rive HAR acceptance host",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@ohos/rive": "file:../../libs/rive.har"
+  }
+}
