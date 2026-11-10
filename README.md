@@ -4,6 +4,8 @@
 
 从 MG_Club 已验收的 `1.1.3-rn.0.1.11` / 提交 `52b666d4` 提取。整理版调整工程布局、依赖路径、构建入口和 API26 元数据，运行时及组件实现不变。原移植仓库和历史证据继续保留；新包构建与历史设备验收分别记录在 [验证说明](docs/VALIDATION.md)。此包尚未发布到 OHPM。
 
+源码仓库：[GitHub · Kamigs/rive-runtime-harmony](https://github.com/Kamigs/rive-runtime-harmony)，以及本地 Gitea 的 `kamigs/rive-runtime-harmony`。两端同步 `main`，克隆与同步方法见 [仓库托管](docs/PUBLISHING.md)。
+
 ## 使用入口
 
 - [ArkUI 接入与对象所有权](docs/INTEGRATION.md)
@@ -11,6 +13,7 @@
 - [验证范围及待验项](docs/VALIDATION.md)
 - [CLI 素材流程与 Flutter 对照](docs/CLI.md)
 - [源码基线与鸿蒙补丁](docs/SOURCE.md)
+- [仓库克隆与双端同步](docs/PUBLISHING.md)
 - [变更记录](CHANGELOG.md)、[来源元数据](SOURCE.json)、[许可证](NOTICE)
 
 ```text

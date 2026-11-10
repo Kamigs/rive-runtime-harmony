@@ -13,7 +13,7 @@
 工具：DevEco Studio 26.0.0 Beta2，SDK 26.0.0.32，devecocli 1.3.2。宿主兼容 API 12，目标 API 26；这不等于已在 API 12 设备验收。
 
 ```bash
-cd /Users/kamigs/Workspace/Dev/Project/mg-club/modules/rive-harmony/verification/har-consumer
+cd /absolute/path/mg-club/modules/rive-harmony/verification/har-consumer
 # 首次检出时创建本地配置；已有配置不要覆盖。
 test -f build-profile.json5 || cp build-profile.template.json5 build-profile.json5
 devecocli build --modules entry --build-mode debug
@@ -29,7 +29,7 @@ devecocli run --module entry --device 'Mate 90 Pro Max' --build-mode debug
 宿主启动时调用 `initializeRive()`。组件通过 `RiveAnimationView` 从 rawfile 加载素材，并从发布版运行时读取画板、动画、状态机和输入名称。`onReady` 可能在文件加载前触发，因此宿主以 `getFile()` 和活动画板存在为加载依据。首帧是否可见仍由截图判断。
 
 ```bash
-cd /Users/kamigs/Workspace/Dev/Project/mg-club
+cd /absolute/path/mg-club
 bash modules/rive-harmony/verification/capture-baseline.sh \
   127.0.0.1:5555 work/rive-validation/stage0/emulator/recheck
 # 模拟器画面、交互通过后，再用同一构建安装到真机。
@@ -57,7 +57,7 @@ bash modules/rive-harmony/verification/capture-baseline.sh \
 源码提交 `4b1609b2bdbf34e46ec37155f8aa5cc9a3612b2f`，Runtime 子模块 `f27a90050386b5428589bddb9a4ce5e248e0e8b3`。完整依赖提交在 `community-dependencies.lock.json`。发布包与此源码的 71 个声明文件一致，但尚无发布二进制对应提交证明。
 
 ```bash
-cd /Users/kamigs/Workspace/Dev/Project/mg-club/modules/rive-harmony
+cd /absolute/path/mg-club/modules/rive-harmony
 git submodule update --init ohos_rive/submodules/rive-runtime \
   ohos_rive/library/src/main/cpp/boundscheck/third_party_bounds_checking_function
 python3 verification/restore-community-dependencies.py

@@ -26,7 +26,7 @@ TSFN空环境问题依据 [Node-API回调契约](https://nodejs.org/api/n-api.ht
 ```bash
 python3 verification/restore-community-dependencies.py verification/native-0.1.11-dependencies.lock.json
 bash verification/setup-host-tools.sh
-export DEVECO_CLI_STUDIO_PATH=/private/tmp/spine-deveco-release/DevEco-Studio.app
+export DEVECO_CLI_STUDIO_PATH=/absolute/path/DevEco-Studio.app
 export OHOS_NDK="$DEVECO_CLI_STUDIO_PATH/Contents/sdk/default/openharmony/native"
 test -f ohos_rive/build-profile.json5 || cp verification/community-build-profile.template.json5 ohos_rive/build-profile.json5
 python3 verification/test-tsfn-cleanup.py
@@ -47,7 +47,7 @@ devecocli run --module entry --build-mode release --device 127.0.0.1:5555 --skip
 产物目录（本工作区绝对路径）：
 
 ```text
-/Users/kamigs/Workspace/Dev/Project/mg-club/work/rive-validation/completion/artifacts/
+/absolute/path/mg-club/work/rive-validation/completion/artifacts/
 ```
 
 HAR、签名HAP、源码归档、SHA256SUMS和实际证据在该目录上一级的 `README.md` 与 `manifest.json`。宿主HAP的原生库必须与HAR字节一致；使用 `audit-artifacts.py`、`audit-native-libs.py` 重复检查。

@@ -36,5 +36,9 @@
   "extraction_manifest": "verification/extraction-manifest.json",
   "patches": "verification/patches/",
   "validation": "docs/VALIDATION.md",
-  "distribution": "local source and artifacts; not published to OHPM"
+  "distribution": "source hosted as rive-runtime-harmony on GitHub and local Gitea; not published to OHPM",
+  "repositories": {
+    "github": "https://github.com/Kamigs/rive-runtime-harmony",
+    "gitea": "kamigs/rive-runtime-harmony (local service URL in Git remote configuration)"
+  }
 }

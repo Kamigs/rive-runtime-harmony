@@ -18,5 +18,6 @@
   "dependencies": {
     "libohos_rive.so": "file:./src/main/cpp/types/libohos_rive"
   },
-  "name": "@ohos/rive"
+  "name": "@ohos/rive",
+  "repository": "https://github.com/Kamigs/rive-runtime-harmony"
 }

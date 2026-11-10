@@ -26,7 +26,7 @@ HAR不变，SHA-256为 `50d1f06f72c484ff6bd0609801df0d01cd1c291e4ccf6139ddc90c03
 ```bash
 # 已按API26.md构建并安装修复HAP后，使用新的绝对证据目录。
 bash verification/capture-api-reload.sh 127.0.0.1:5555 /absolute/path/reload-emulator
-bash verification/capture-api-reload.sh 192.168.15.63:36095 /absolute/path/reload-device
+bash verification/capture-api-reload.sh DEVICE_SERIAL /absolute/path/reload-device
 ```
 
 ## 主要真机结果
