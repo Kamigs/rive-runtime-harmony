@@ -16,7 +16,7 @@ bash scripts/build.sh release
 
 `dependencies.lock.json` 固定八个依赖提交。恢复脚本下载精确提交；如果现有检出提交不符或有已跟踪修改，则报错并保留现状。已有相同布局的源码检出可用 `--cache-root /absolute/source/root` 作为只读 Git 对象来源，仍按锁定 SHA 取源码，不复制其编译缓存。
 
-Premake **5.0.0-beta7** 在首次构建时从锁定源码编译；Ninja Python发行版本 **1.11.1.3** 安装到 `.tools/`；PLY **3.11** 使用锁定源码。旧社区所需的 Premake beta2 不参与当前构建。shader由快照的构建流程生成。
+Premake使用快照的 **v5.0.0-beta7** 构建入口和锁定提交，在首次构建时编译（该源码构建的`--version`实际显示`5.0.0-dev`）；Ninja Python发行版本 **1.11.1.3** 安装到 `.tools/`；PLY **3.11** 使用锁定源码。旧社区所需的 Premake beta2 不参与当前构建。shader由快照的构建流程生成。
 
 | 变量 | 默认值 / 作用 |
 | --- | --- |
